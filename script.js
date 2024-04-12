@@ -118,7 +118,7 @@ function displayGuides() {
     guidesBody.innerHTML = ""; /* restart tbl*/
     const selectedInsuranceId = insuranceSelect.value; 
     const searchText = searchInput.value.toLowerCase();
-
+                            /* array para os que passaram no teste*/
     let filteredGuides = data.guides.filter(guide => 
         (selectedInsuranceId === "" || guide.insurance_id.toString() === selectedInsuranceId) && /* tratamento de error */
         (searchText === "" || guide.number.includes(searchText) || guide.patient.name.toLowerCase().includes(searchText)) /*comparação e true*/
