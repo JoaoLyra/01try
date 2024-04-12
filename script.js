@@ -16,8 +16,8 @@ const data = {
         "name": "Sulamérica"
     }],
     "guides": [{
-        "start_date": "2021-04-23T19:18:47.210Z",  
         "number": "3210998321",
+        "start_date": "2023-12-23T19:18:47.210Z",
         "patient": {
             "id": 9321123,
             "name": "Augusto Ferreira",
@@ -32,7 +32,7 @@ const data = {
         "price": 5567.2
     }, {
         "number": "287312832",
-        "start_date": "2021-04-23T19:18:47.210Z",
+        "start_date": "2022-11-23T19:18:47.210Z",
         "patient": {
             "id": 93229123,
             "name": "Caio Carneiro",
@@ -47,7 +47,7 @@ const data = {
         "price": 213.3
     }, {
         "number": "283718273",
-        "start_date": "2021-04-22T19:18:47.210Z",
+        "start_date": "2023-10-22T19:18:47.210Z",
         "patient": {
             "id": 213122388,
             "name": "Luciano José",
@@ -62,7 +62,7 @@ const data = {
         "price": 88.99
     }, {
         "number": "009090321938",
-        "start_date": "2021-04-20T19:18:47.210Z",
+        "start_date": "2023-09-20T19:18:47.210Z",
         "patient": {
             "id": 3367263,
             "name": "Felício Santos",
@@ -77,7 +77,7 @@ const data = {
         "price": 828.99
     }, {
         "number": "8787128731",
-        "start_date": "2021-04-01T19:18:47.210Z",
+        "start_date": "2023-08-01T19:18:47.210Z",
         "patient": {
             "id": 777882,
             "name": "Fernando Raposo",
@@ -92,7 +92,7 @@ const data = {
         "price": 772
     }, {
         "number": "12929321",
-        "start_date": "2021-04-02T19:18:47.210Z",
+        "start_date": "2023-07-02T19:18:47.210Z",
         "patient": {
             "id": 221,
             "name": "Paciente com nome grante pra colocar text ellipsis testando nome com paciente grande"
@@ -105,4 +105,54 @@ const data = {
         },
         "price": 221
     }]
-  };
+   
+};
+
+const guidesBody = document.getElementById("guidesBody"); 
+const insuranceSelect = document.getElementById("insuranceSelect");
+const searchInput = document.getElementById("searchInput");
+const guidesPerPage = 6;
+let currentPage = 1;
+
+function displayGuides() {
+    guidesBody.innerHTML = ""; /* restart tbl*/
+    const selectedInsuranceId = insuranceSelect.value; 
+    const searchText = searchInput.value.toLowerCase();
+
+    let filteredGuides = data.guides.filter(guide => 
+        (selectedInsuranceId === "" || guide.insurance_id.toString() === selectedInsuranceId) && /* tratamento de error */
+        (searchText === "" || guide.number.includes(searchText) || guide.patient.name.toLowerCase().includes(searchText)) /*comparação e true*/
+    );
+
+    const startIndex = (currentPage - 1) * guidesPerPage;
+    const endIndex = startIndex + guidesPerPage;
+    const paginatedGuides = filteredGuides.slice(startIndex, endIndex); /*recorta uma string e cria uma nova*/
+
+    paginatedGuides.forEach((guide, index) => { /* tbl start */
+        const guideStartDate = new Date(guide.start_date); /* pegando a data do guide e jogando na nova constante */
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${guideStartDate.toLocaleDateString()}</td>
+            <td>${guide.number}</td>
+            <td class="patient-name ${index === paginatedGuides.length - 1 ? 'last-patient-name' : ''}"> 
+                <img src="${guide.patient.thumb_url || 'https://via.placeholder.com/150x150.jpg'}" alt="${guide.patient.name}">
+                ${guide.patient.name}
+            </td>
+            <td ${guide.health_insurance.is_deleted ? 'class="deleted-insurance"' : ''}>${guide.health_insurance.name}</td> 
+            <td>${guide.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+        `;
+        guidesBody.appendChild(tr); /* filho */
+    });
+
+    if (paginatedGuides.length === 0) {
+        const tr = document.createElement("tr"); 
+        tr.innerHTML = `<td colspan="5" style="text-align: center;">Nenhuma guia encontrada</td>`;
+        guidesBody.appendChild(tr);
+    }
+
+}
+
+insuranceSelect.addEventListener("change", displayGuides);
+searchInput.addEventListener("input", displayGuides);
+
+displayGuides();
