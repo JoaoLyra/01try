@@ -7,3 +7,20 @@ insurances.forEach(insurance => {
 
 const formattedDate = new Date(guide.start_date).toLocaleDateString('pt-BR');
             const formattedPrice = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(guide.price);
+
+
+
+no index.html
+criar tabela
+    - thead
+    - tbody
+
+no main.js
+
+1 - criar um função
+    1.1 - inicializar uma variável
+2 - dar um forEach no JSON const = data
+    2.1 - data.guides.forEach
+    2.1 redeclarar a variavel que vc inicializou, chamando as linhas e colunas do tbody
+3 - fora do forEach: se não tiver guias - mostrar nenhuma guia encontrada
+4 - redenrizar a variavel redeclarada acima no tbody do index.htmk
