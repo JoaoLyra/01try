@@ -1,0 +1,12 @@
+insurances.forEach(insurance => {
+    const option = document.createElement('option');
+    option.value = insurance.id;
+    option.textContent = insurance.name;
+    insuranceSelect.appendChild(option);
+
+ const filteredGuides = guides.filter(guide => {
+        const patientName = guide.patient.name.toLowerCase();
+        const guideNumber = guide.number.toLowerCase();
+
+const formattedDate = new Date(guide.start_date).toLocaleDateString('pt-BR');
+            const formattedPrice = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(guide.price);
