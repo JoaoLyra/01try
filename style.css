@@ -1,16 +1,6 @@
 .container {
     padding: 50px;
 }
-select, input[type="text"] {
-    width: 18%;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    margin: 10px;
-}
 table {
     width: 100%;
     table-layout: fixed;
@@ -28,52 +18,10 @@ th {
     background-color: #ffffff;
     cursor: pointer;
 }
-.deleted-insurance {
-    text-decoration: line-through;
-    position: relative;
-}
-.deleted-insurance:hover::after {
-    content: "Convênio Apagado";
-    position: absolute;
-    top: -2.0em;
-    background-color: #fff;
-    padding: 0.5em;
-    border: 1px solid #fffefe;
-    border-radius: 5px;
-}
-.patient-name img {
-    vertical-align: middle;
-    margin-right: 10px;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    object-fit: cover;
-}
-.pagination {
-    margin-top: 20px;
-}
-.with-css {
-    width: 120px;
-}
-.box { 
-    max-width: 250px;
-    font-size: 20dp; 
-    white-space: nowrap;                  
-    overflow: hidden; 
-    text-overflow: ellipsis;
-    border: 1px solid #ccc;
-}
-.text-ellipsis {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.last-patient-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.form-control {
-    display: inline-block;
-    width: 16%;
-} 
+
+.roudend {
+    border-radius: 20px;
+    height: 50px;
+    width: 50px;
+    margin-left: ;
+}   
