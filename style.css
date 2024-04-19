@@ -23,5 +23,14 @@ th {
     border-radius: 20px;
     height: 50px;
     width: 50px;
-    margin-left: ;
-}   
+    margin-right: 10px;
+}
+
+.item_apagado {
+    text-decoration: line-through;
+}
+.elipsis {
+    white-space: nowrap ;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
