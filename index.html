@@ -10,17 +10,14 @@
 </head>
     <body>
         <div class="container">
-            <div class="insurances">
-                <!-- <label for="">Pesquisar</label> -->
-                <!-- <input type="text" id="searchInput" class="form-control" placeholder="Buscar..."> -->
-                <!-- <select id="insuranceSelect" class="form-control">
-                    <option value="">Convênio</option>
-                    <option value="3322">Amil</option>
-                    <option value="3293">Bradesco</option>
-                    <option value="99231">Hapvida</option>
-                    <option value="1322">CASSI</option>
-                    <option value="23111">Sulamerica</option>
-                </select> -->
+            <div>
+                <div>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar..." onkeyup="filterTab()">
+                </div>
+                <div>
+                    <select id="insuranceSelect" class="form-control" onchange="filterTab()">
+                </div>
+                </select>
                 <table id="guidesTable" class="table">
                     <thead>
                         <tr>
