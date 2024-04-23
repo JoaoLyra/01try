@@ -21,6 +21,43 @@ table += `
                 })}</td>
             </tr>`;
     });
+const init = () => {
+    renderTable(dataShop);
+}
+const renderTable = () => {
+    let table = '';
 
+    dataShop.forEach(data => {
+        const dinheiroForm = data.price.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        
+    }); 
+        table +=`
+            <tr>
+                <td>${new Date(data.date).toLocaleDateString('pt-BR')}</td>
+                <td>${data.customer.first_name} ${data.customer.last_name}</td>
+                <td>${data.customer.phone}</td>
+                <td>${data.store.name}</td>
+                <td>${data.store.phone}</td>
+                <td>${data.type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</td>
+                <td>${dinheiroForm}</td>
+                <td>${data.amount}</td>
+            
+        </tr>
+        `
+    });
+    
     document.getElementById("guidesTable").innerHTML = table;
 }
+const renderSelect = () => {
+    let selectOpcao = '<option value="">Selecionar Tipo</option>';
+    
+    data.type.forEach(data => {
+        selectOpcao += `<option value="${data.type}">${data.type}</option>`;
+        console.log(data)
+        const typeFilter = document.getElementById("typeFilter").innerHTML = selectOpcao;
+    });
+}
+init();
+   
