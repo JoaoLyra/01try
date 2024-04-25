@@ -476,6 +476,7 @@ const renderTable = () => {
         const dinheiroForm = data.price.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL',
+     const totalPrice = (item.price * item.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }); 
         table +=`
             <tr>
