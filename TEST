@@ -1,28 +1,6 @@
-data.forEach(item => {
-                const formattedDate = new Date(item.date).toLocaleDateString('pt-BR');
-                const formattedPrice = item.price.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-
-//
-table += `
-            <tr>
-                <td>${formattedDate}</td>
-                <td>${item.customer.first_name} ${item.customer.last_name}</td>
-                <td>${item.customer.phone}</td>
-                <td>${item.store.name}</td>
-                <td>${item.store.phone}</td>
-                <td>${item.type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</td>
-                <td>${item.amount}</td>
-                <td>${formattedPrice}</td>
-                <td>${(item.amount * item.price).toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                })}</td>
-            </tr>`;
-    });
 const init = () => {
     renderTable(dataShop);
+    renderSelect(data)
 }
 const renderTable = () => {
     let table = '';
@@ -31,7 +9,6 @@ const renderTable = () => {
         const dinheiroForm = data.price.toLocaleString('pt-BR', {
         style: 'currency',
         currency: 'BRL',
-        
     }); 
         table +=`
             <tr>
@@ -43,21 +20,37 @@ const renderTable = () => {
                 <td>${data.type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</td>
                 <td>${dinheiroForm}</td>
                 <td>${data.amount}</td>
-            
-        </tr>
+                <td>${data.price * data.amount}</td>
+            </tr>
         `
     });
-    
     document.getElementById("guidesTable").innerHTML = table;
 }
 const renderSelect = () => {
-    let selectOpcao = '<option value="">Selecionar Tipo</option>';
-    
-    data.type.forEach(data => {
-        selectOpcao += `<option value="${data.type}">${data.type}</option>`;
-        console.log(data)
-        const typeFilter = document.getElementById("typeFilter").innerHTML = selectOpcao;
+    let inject= '<option value="">Tipo</option>';
+    const arrSelect = dataShop.map(item => item.type);
+    const typesEncontrados = new Set(arrSelect);
+     
+    typesEncontrados.forEach(type => {
+        inject += `<option value="${type}">${type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</option>`;        
     });
+    document.getElementById('arrSelect').innerHTML = inject;
 }
+const filterSelect = () => {
+    let inject = true
+
+    const typeSelect = arrSelect;
+}
+
+//const filterSelect = data.guides.filter(data => {
+    //let valido = true;
+    
+    //if (data.type && data.type !== data.typesEncontrados) {
+        //valido = false;
+    //}
+
+    //return valido;
+//});
+//renderSelect(filterSelect);
+
 init();
-   
