@@ -11,11 +11,11 @@
     <body>
         <div class="container">
             <div>
-                <label for="typeFilter">Filtrar por Tipo:</label>
-                <select id="typeFilter" onchange="filterByType()">
-                <option value="">Todos</option>
-                <option value="IN">Entrada</option>
-                <option value="OUT">Saída</option>
+                    
+                    <select id="arrSelect" class="form-control" onchange="filterByType()">
+                    <option value="">Todos</option>
+                    <option value="IN">Entrada</option>
+                    <option value="OUT">Saída</option>
         </select>
     </div>
                 </div>
@@ -32,51 +32,7 @@
                             <td>Quantidade</td>
                             <td>Preço unitário</td>
                             <td>Preço total</td>
-                        </tr>
-                    </thead>
-                    <tbody id="guidesBody"></tbody>
-                </table>
-            </div>
-        </div>
-        <script src="/old2/script.js"></script>
-    </body>
-</html>
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desafio 2</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-
-</head>
-    <body>
-        <div class="container">
-            <div>
-                    <select id="typeFilter" class="form-control" onchange="">
-        </select>
-    </div>
-                </div>
-                </select>
-                <table id="guidesTable" class="table">
-                    <thead>
-                          <tr>
-                            <td>Data</td>
-                            <td>Cliente</td>
-                            <td>Telefone do cliente</td>
-                            <td>Loja</td>
-                            <td>Telefone da Loja</td>
-                            <td>Tipo</td>
-                            <td>Quantidade</td>
-                            <td>Preço unitário</td>
-                            <td>Preço total</td>
+                        
                         </tr>
                     </thead>
                     <tbody id="guidesBody"></tbody>
