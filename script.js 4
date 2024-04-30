@@ -1,27 +1,53 @@
-const renderSelect = () => {
-    let inject = '<option value="">Tipo</option>'; 
-    Obter todos os tipos únicos dos dados
-    const arrSelect = dataShop.map(item => item.type);
+let arrSelect; 
+let typesEncontrados;
 
-     Usar um Set para garantir tipos únicos
-    const typesEncontrados = new Set(arrSelect);
+const init = () => {
+    renderTable(dataShop);
+    renderSelect();
+};
 
-    Iterar sobre os tipos únicos encontrados
-    typesEncontrados.forEach(type => {
-        Converter tipo para texto exibido
-        let tipoExibido = '';
-        if (type === 'IN') {
-            tipoExibido = 'Entrada';
-        } else if (type === 'OUT') {
-            tipoExibido = 'Saída';
-        }
+const renderTable = (data) => {
+    let table = '';
 
-         Adicionar opção ao HTML injetado
-        inject += `<option value="${type}">${tipoExibido}</option>`;
+    data.forEach(data => {
+        const dinheiroForm = data.price.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }); 
+        table +=`
+            <tr>
+                <td>${new Date(data.date).toLocaleDateString('pt-BR')}</td>
+                <td>${data.customer.first_name} ${data.customer.last_name}</td>
+                <td>${data.customer.phone}</td>
+                <td>${data.store.name}</td>
+                <td>${data.store.phone}</td>
+                <td>${data.type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</td>
+                <td>${dinheiroForm}</td>
+                <td>${data.amount}</td>
+                <td>${data.price * data.amount}</td>
+            </tr>
+        `;
     });
 
-    Atualizar o elemento <select> com as opções
+    document.getElementById("guidesTable").innerHTML = table;
+};
+
+const renderSelect = () => {
+    let inject= '<option value="">Tipo</option>';
+    arrSelect = dataShop.map(item => item.type);
+    typesEncontrados = new Set(arrSelect);
+     
+    typesEncontrados.forEach(type => {
+        inject += `<option value="${type}">${type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</option>`;        
+    });
+
     document.getElementById('arrSelect').innerHTML = inject;
 };
 
-document.getElementById('arrSelect').innerHTML = inject;
+const filterSelect = () => {
+    const typeSelect = document.getElementById('arrSelect').value;
+    const filteredData = dataShop.filter(item => item.type === typeSelect);
+    renderTable(filteredData);
+};
+
+init();
