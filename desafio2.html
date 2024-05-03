@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Guias</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style2.css">
+
+</head>
+    <body>
+        <div class="container">
+            <div>
+                <div>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar..." onkeyup="filterTab()">
+                
+                </div>
+                <div>
+                    <select id="insuranceSelect" class="form-control" onchange="filterTab()">
+                        <option value="">Selecionar Convênio</option>
+                    </select>
+                </div>
+                <table id="guidesTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Número</th>
+                            <th>Paciente</th>
+                            <th>Convênio</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guidesBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <script src="/test2.js"></script>
+    </body>
+</html>
+
+
+
+
+
+
+<input type="date" id="datepicker">
+
+<button id="todayButton">HOJE</button>
+
