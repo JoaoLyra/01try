@@ -1,0 +1,109 @@
+const init = () => {
+    renderGuides(data.guides);
+    renderSelect();
+};
+const renderGuides = (data) => {
+    let table = '';
+       
+    data.forEach(guide => {
+        const imagePatient = guide.patient.thumb_url;
+        console.log(guide)
+
+
+        if (guide.health_insurance.is_deleted === true) {
+            convenioApagada = "Convênio Apagado";
+            tracejado = 'item_apagado'
+
+        }
+
+        const dinheiroBrasil = guide.price.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          });
+        
+        table += `
+                    <tr>
+                        <td>${new Date(guide.start_date).toLocaleDateString('pt-BR')}</td>
+                        <td>${guide.number}</td>
+                        <td class="elipsis"><img class="roudend" src= "${imagePatient}"></img>${guide.patient.name}</td>
+                        <td>${guide.health_insurance.name}</td>
+                        <td>${dinheiroBrasil}</td>
+                    </tr>
+                 `
+    });
+
+    if (!data.length) {
+        table += `
+            <tr>
+                <td colspan="5" style="text-align: center;">Nenhuma guia encontrada</td>
+            </tr>
+        `
+    }
+
+    console.log(document.getElementById("guidesBody"), 'document.getElementById("guidesBody")');
+    document.getElementById("guidesBody").innerHTML = table;
+}; 
+
+const renderSelect = () => {
+    let selectOpcao = '<option value="">Selecionar Convênio</option>';
+        
+    data.insurances.forEach(insurance => {
+        selectOpcao += `<option value="${insurance.id}">${insurance.name}</option>`;
+        console.log(insurance)
+        const insuranceSelect = document.getElementById("insuranceSelect").innerHTML = selectOpcao;
+    });
+};
+document.addEventListener("DOMContentLoaded", function() {
+    const insuranceSelect = document.getElementById("insuranceSelect");
+    const datepicker = document.getElementById("datepicker");
+    const hjBotao = document.getElementById("hjBotao");
+
+    insuranceSelect.innerHTML = data.insurances.map(insurance => `<option value="${insurance.id}">${insurance.name}</option>`).join('');
+
+    datepicker.addEventListener("change", filterGuides);
+    insuranceSelect.addEventListener("change", filterGuides);
+    hjBotao.addEventListener("click", function() {
+        const hoje = new Date().toISOString().split('T')[0]; 
+        datepicker.value = hoje;
+        filterGuides();
+    });        
+});
+const filterGuides = () => {
+    const selectedInsuranceId = document.getElementById("insuranceSelect").value;
+    const selectedDate = document.getElementById("datepicker").value;
+
+    const filteredGuides = data.guides.filter(guide => {
+        const guideStartDate = guide.start_date.split('T')[0];
+    });
+}
+ const filterTab = () => {
+    let valueInsurance = ~~document.getElementById("insuranceSelect").value;
+    console.log(valueInsurance)
+    let valueInput = document.getElementById("searchInput").value;
+    console.log(valueInput)
+    const normalizeInput = 
+    valueInput && 
+    valueInput.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+    const filterGuides = data.guides.filter(guide => {
+        let valido = true;
+        const namePacientFormated = guide.patient.name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, "");
+    
+
+        if (valueInsurance && valueInsurance !== guide.insurance_id) {
+            valido = false;
+        }
+
+        if (normalizeInput && !namePacientFormated.includes(normalizeInput) && !guide.number.includes(normalizeInput))  {
+            valido = false;
+        }
+
+        return valido;
+    });
+    renderGuides(filterGuides);
+};
+init();
+
