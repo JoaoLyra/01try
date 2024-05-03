@@ -466,9 +466,23 @@ const dataShop = [
     }
 ]
 
+let totalEntradas = 0;
+let totalSaidas = 0;
+
 const init = () => {
+    calculateTotals(dataShop);
     renderTable(dataShop);
     renderSelect();
+};
+
+const calculateTotals = (data) => {
+    data.forEach(data => {
+        if (data.type === 'IN') {
+            totalEntradas += data.price * data.amount;
+        } else {
+            totalSaidas += data.price * data.amount;
+        }
+    });
 };
 
 const renderTable = (data) => {
@@ -478,8 +492,12 @@ const renderTable = (data) => {
         const dinheiroForm = data.price.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
-        
-        }); 
+        });
+        const valorTotal = (data.price * data.amount).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        });
+
         table +=`
             <tr>
                 <td>${new Date(data.date).toLocaleDateString('pt-BR')}</td>
@@ -488,78 +506,60 @@ const renderTable = (data) => {
                 <td>${data.store.name}</td>
                 <td>${data.store.phone}</td>
                 <td>${data.type === 'IN' ? 'ENTRADA' : 'SAÍDA'}</td>
-                <td>${dinheiroForm}</td>
                 <td>${data.amount}</td>
-                <td>${data.price * data.amount}</td>
+                <td>${dinheiroForm}</td>
+                <td>${valorTotal}</td>
             </tr>
         `;
     });
 
+    const saldo = totalEntradas - totalSaidas;
+
+    const totalEntradasFormatado = totalEntradas.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+
+    const totalSaidasFormatado = totalSaidas.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+
+    const saldoFormatado = saldo.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+
+    document.getElementById("totalEntradas").innerText = totalEntradasFormatado;
+    document.getElementById("totalSaidas").innerText = totalSaidasFormatado;
+    document.getElementById("saldo").innerText = saldoFormatado;
+
     document.getElementById("guidesTable").innerHTML = table;
 };
 
+const filterByType = () => {
+    const typeSelect = document.getElementById('arrSelect').value;
+    let filteredData = dataShop;
+
+    if (typeSelect) {
+        filteredData = dataShop.filter(item => item.type === typeSelect);
+    }
+
+    renderTable(filteredData);
+};
+
 const renderSelect = () => {
-    let inject= '<option value="">Tipo</option>';
+    let inject = '<option value="">Tipo</option>';
     const arrSelect = dataShop.map(item => item.type);
     const typesEncontrados = new Set(arrSelect);
-     
+
     typesEncontrados.forEach(type => {
-        inject += `<option value="${type}">${type === 'IN' ? 'Entrada' : 'Saída'}</option>`;        
+        inject += `<option value="${type}">${type === 'IN' ? 'Entrada' : 'Saída'}</option>`;
     });
 
     document.getElementById('arrSelect').innerHTML = inject;
+
+    document.getElementById('arrSelect').addEventListener('change', filterByType);
 };
 
-const filterSelect = () => {
-    const typeSelect = document.getElementById('arrSelect').value;
-    const filteredItem = dataShop.filter(item => item.type === typeSelect);
-    renderSelect(filteredItem);
-    let valueInsurance = ~~document.getElementById("insuranceSelect").value;
-    console.log(valueInsurance)
-    const filterGuides = data.guides.filter(guide => {
-        let valido = true;
-    
-
-        if (valueInsurance && valueInsurance !== guide.insurance_id) {
-            valido = false;
-        }
-
-        if (normalizeInput && !namePacientFormated.includes(normalizeInput) && !guide.number.includes(normalizeInput))  {
-            valido = false;
-        }
-
-        return valido;
-    });
-};
-
-init();  
-
-
-
-const filterTab = () => {
-    let valueInsurance = ~~document.getElementById("insuranceSelect").value;
-    console.log(valueInsurance)
-    let valueInput = document.getElementById("searchInput").value;
-    console.log(valueInput)
-    const normalizeInput = 
-    valueInput && 
-    valueInput.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-
-    const filterGuides = data.guides.filter(guide => {
-        let valido = true;
-        const namePacientFormated = guide.patient.name
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, "");
-    
-
-        if (valueInsurance && valueInsurance !== guide.insurance_id) {
-            valido = false;
-        }
-
-        if (normalizeInput && !namePacientFormated.includes(normalizeInput) && !guide.number.includes(normalizeInput))  {
-            valido = false;
-        }
-
-        return valido;
-    });
+init();
