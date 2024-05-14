@@ -106,4 +106,110 @@ const filterGuides = () => {
     renderGuides(filterGuides);
 };
 init();
+/
+document.addEventListener("DOMContentLoaded", function () {
+    const guias = data.guides;
+    let guiasFiltradas = guias;
+    let paginaAtual = 1;
+    const guiasPorPagina = 2;
 
+    const inputDataInicio = document.getElementById("start_date");
+    const hojeBtn = document.getElementById("hojeBtn");
+    const tabelaGuias = document.getElementById("tabelaGuias");
+    const paginacao = document.getElementById("paginacao");
+
+    // Definir valor padrão para o filtro de data de início
+    const dataAtual = new Date();
+    const mesAtual = dataAtual.getMonth() + 1;
+    inputDataInicio.value = `${anoAtual}-${mesAtual.toString().padStart(2, '0')}-${diaAtual.toString().padStart(2, '0')}`;
+
+    // Evento para o botão 'Hoje'
+    hojeBtn.addEventListener("click", function () {
+        const hoje = new Date();
+        const mesHoje = hoje.getMonth() + 1;
+        const diaHoje = hoje.getDate();
+        const anoHoje = hoje.getFullYear();
+        inputDataInicio.value = `${anoHoje}-${mesHoje.toString().padStart(2, '0')}-${diaHoje.toString().padStart(2, '0')}`;
+        filtrarGuias();
+    });
+
+    // Evento para o filtro de data de início
+    inputDataInicio.addEventListener("change", filtrarGuias);
+
+    // Função para filtrar guias com base na data de início
+    function filtrarGuias() {
+        const dataInicio = new Date(inputDataInicio.value);
+        guiasFiltradas = guias.filter(guia => {
+            const dataGuia = new Date(guia.start_date);
+            return dataGuia.toDateString() === dataInicio.toDateString();
+        });
+        renderizarGuias();
+    }
+
+    // Função para ordenar guias pela data de início
+    function ordenarGuias(guias) {
+        return guias.slice().sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+    }
+
+    // Função para renderizar a tabela de guias
+    function renderGuides() {
+        const guiasOrdenadas = ordenarGuias(guiasFiltradas);
+        const inicio = (paginaAtual - 1) * guiasPorPagina;
+        const fim = inicio + guiasPorPagina;
+        const guiasPaginadas = guiasOrdenadas.slice(inicio, fim);
+
+        const conteudoTabela = guiasPaginadas.map(guia => {
+            return `
+                <tr>
+                    <td>${guia.number}</td>
+                    <td>${guia.start_date}</td>
+                    <td>${guia.patient.name}</td>
+                    <td>${guia.health_insurance.name}</td>
+                    <td>${guia.price}</td>
+                </tr>
+            `;
+        }).join("");
+        tabelaGuias.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Data de Início</th>
+                    <th>Paciente</th>
+                    <th>Seguro</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${conteudoTabela}
+            </tbody>
+        `;
+
+        renderizarPaginacao();
+    }
+
+    // Função para renderizar a paginação
+    function renderizarPaginacao() {
+        const totalGuias = guiasFiltradas.length;
+        const totalPaginas = Math.ceil(totalGuias / guiasPorPagina);
+
+        let botoesPagina = "";
+        for (let i = 1; i <= totalPaginas; i++) {
+            botoesPagina += `<button class="pagina">${i}</button>`;
+        }
+
+        paginacao.innerHTML = botoesPagina;
+
+        const botoes = paginacao.querySelectorAll(".pagina");
+        botoes.forEach(botao => {
+            botao.addEventListener("click", () => {
+                paginaAtual = parseInt(botao.textContent);
+                renderizarGuias();
+            });
+        });
+    }
+
+    // Renderização inicial
+    renderizarGuias();
+});
+
+init();
