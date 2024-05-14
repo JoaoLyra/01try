@@ -1,32 +1,44 @@
-const filtrarTabela = () => {
-    const convenioSelecionado = document.getElementById('insuranceSelect').value;
-    const textoPesquisa = document.getElementById('searchText').value.trim().toLowerCase();
+function mostrarItensPorPagina(paginaAtual, itensPorPagina) {
+  const startIndex = (paginaAtual - 1) * itensPorPagina;
+  const endIndex = startIndex + itensPorPagina;
+  const itensPagina = listaItens.slice(startIndex, endIndex);
 
-    const textoFormatado = textoPesquisa.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); // Normaliza e remove acentos do texto de pesquisa
+document.getElementById("btnAnterior").addEventListener("click", () => {
+  if (paginaAtual > 1) {
+    paginaAtual--;
+    mostrarItensPorPagina(paginaAtual, itensPorPagina);
+  }
+});
 
-    const guiasFiltradas = data.guides.filter(guide => {
-        let incluirGuia = true; // Flag para controlar se a guia deve ser incluída no resultado final
+document.getElementById("btnProxima").addEventListener("click", () => {
+  const totalPages = Math.ceil(listaItens.length / itensPorPagina);
+  if (paginaAtual < totalPages) {
+    paginaAtual++;
+    mostrarItensPorPagina(paginaAtual, itensPorPagina);
+  }
+});
 
-        const nomePacienteFormatado = guide.patient.name.trim().toLowerCase()
-            .normalize('NFD').replace(/[\u0300-\u036f]/g, ""); // Normaliza e remove acentos do nome do paciente
+document.getElementById("btnHoje").addEventListener("click", () => {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  let mes = hoje.getMonth() + 1;
+  let dia = hoje.getDate();
+  if (mes < 10) mes = '0' + mes;
+  if (dia < 10) dia = '0' + dia;
+  const dataHoje = `${ano}-${mes}-${dia}`;
+  document.getElementById("dataFiltro").value = dataHoje;
+  dataFiltrada = dataHoje;
+  mostrarItensPorPagina(paginaAtual, itensPorPagina, dataFiltrada);
 
-        if (convenioSelecionado !== '' && guide.insurance_id != convenioSelecionado) {
-            incluirGuia = false; // Se o convênio selecionado for diferente do convênio da guia, não incluir
-        }
+let ordenacao = { coluna: 'data', ordem: 'desc' };
 
-        if (textoFormatado !== '') {
-            // Verifica se o nome do paciente contém o texto pesquisado
-            if (!nomePacienteFormatado.includes(textoFormatado)) {
-                incluirGuia = false; // Se o nome do paciente não corresponder ao texto pesquisado, não incluir
-            }
-        }
-
-        return incluirGuia; // Retorna true se a guia deve ser incluída no resultado final
-    });
-
-    renderGuides(guiasFiltradas); // Chama a função para renderizar a tabela com as guias filtradas
-};
-
-// Chama a função de filtragem ao digitar no campo de pesquisa ou ao selecionar um convênio
-document.getElementById('searchText').addEventListener('input', filtrarTabela);
-document.getElementById('insuranceSelect').addEventListener('change', filtrarTabela);
+document.querySelectorAll('[data-coluna]').forEach(coluna => {
+  coluna.addEventListener('click', () => {
+    const colunaSelecionada = coluna.dataset.coluna;
+    if (ordenacao.coluna === colunaSelecionada) {
+      // Se já está ordenado pela mesma coluna, inverte a ordem
+      ordenacao.ordem = ordenacao.ordem === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Se não, define a nova coluna de ordenação e a ordem ascendente
+      ordenacao.coluna = colunaSelecionada;
+      ordenacao.ordem = 'asc';                                                
