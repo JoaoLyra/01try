@@ -1,113 +1,138 @@
- };
-
-  const insuranceSelect = document.getElementById("insuranceSelect");
-  const searchInput = document.getElementById("searchInput");
-  const startDatePicker = $("#startDatePicker");
-  const guidesBody = document.getElementById("guidesBody");
-  const pagination = document.getElementById("pagination");
-
-  let currentPage = 1;
-  const guidesPerPage = 2;
-
-  
-  function populateInsuranceOptions() {
-    data.insurances.forEach(insurance => {
-      const option = document.createElement("option");
-      option.value = insurance.id;
-      option.textContent = insurance.name;
-      insuranceSelect.appendChild(option);
+// Função para calcular o total de procedimentos agrupados por ID
+function calcularTotalPorID() {
+    const totalPorID = {};
+    procedimentos.forEach(procedimento => {
+        if (!totalPorID[procedimento.id]) {
+            totalPorID[procedimento.id] = 0;
+        }
+        totalPorID[procedimento.id]++;
     });
-  }
+    return totalPorID;
+}
 
-  
-  function displayGuides() {
-    guidesBody.innerHTML = "";
-    const selectedInsuranceId = insuranceSelect.value;
-    const searchText = searchInput.value.toLowerCase();
-    const selectedStartDate = startDatePicker.datepicker('getDate');
-
-    let filteredGuides = data.guides.filter(guide => 
-      (selectedInsuranceId === "" || guide.insurance_id.toString() === selectedInsuranceId) &&
-      (searchText === "" || guide.number.includes(searchText) || guide.patient.name.toLowerCase().includes(searchText))
-    );
-
- 
-        
-    const startIndex = (currentPage - 1) * guidesPerPage;
-    const endIndex = startIndex + guidesPerPage;
-    const paginatedGuides = filteredGuides.slice(startIndex, endIndex);
-
-    paginatedGuides.forEach(guide => {
-      const guideStartDate = new Date(guide.start_date);
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${guide.number}</td>
-        <td>${guideStartDate.toLocaleDateString()}</td>
-        <td class="patient-name">
-          <img src="${guide.patient.thumb_url || 'https://via.placeholder.com/150x150.jpg'}" alt="${guide.patient.name}">
-          ${guide.patient.name}
-        </td>
-        <td ${guide.health_insurance.is_deleted ? 'class="deleted-insurance"' : ''}>${guide.health_insurance.name}</td>
-        <td>${guide.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-      `;
-      guidesBody.appendChild(tr);
+// Função para calcular o total de procedimentos por group_key
+function calcularTotalPorGroupKey() {
+    const totalPorGroupKey = {};
+    procedimentos.forEach(procedimento => {
+        if (!totalPorGroupKey[procedimento.group_key]) {
+            totalPorGroupKey[procedimento.group_key] = 0;
+        }
+        totalPorGroupKey[procedimento.group_key]++;
     });
+    return totalPorGroupKey;
+}
 
-    
-    if (paginatedGuides.length === 0) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="5" style="text-align: center;">Nenhuma guia encontrada</td>`;
-      guidesBody.appendChild(tr);
-    }
-
-    
-    renderPagination(filteredGuides.length);
-  }
-
-  
-  function renderPagination(totalGuides) {
-    pagination.innerHTML = "";
-
-    const totalPages = Math.ceil(totalGuides / guidesPerPage);
-
-    if (totalPages > 1) {
-      const prevButton = document.createElement("button");
-      prevButton.textContent = "Anterior";
-      prevButton.classList.add("btn", "btn-secondary", "mr-2");
-      prevButton.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            displayGuides();
-          }
-        });
-        pagination.appendChild(prevButton);
-
-        const nextButton = document.createElement("button");
-        nextButton.textContent = "Próximo";
-        nextButton.classList.add("btn", "btn-secondary");
-        nextButton.addEventListener("click", () => {
-          if (currentPage < totalPages) {
-            currentPage++;
-            displayGuides();
-          }
-        });
-        pagination.appendChild(nextButton);
-      }
-    }
-
-    
-    insuranceSelect.addEventListener("change", displayGuides);
-    searchInput.addEventListener("input", displayGuides);
-    startDatePicker.datepicker({
-      format: 'dd/mm/yyyy',
-      autoclose: true,
-      todayHighlight: true,
-      endDate: '0d',
-      language: 'pt-BR'
+// Função para calcular o total de procedimentos por attendance_id
+function calcularTotalPorAttendanceID() {
+    const totalPorAttendanceID = {};
+    procedimentos.forEach(procedimento => {
+        if (!totalPorAttendanceID[procedimento.attendance_id]) {
+            totalPorAttendanceID[procedimento.attendance_id] = 0;
+        }
+        totalPorAttendanceID[procedimento.attendance_id]++;
     });
-    startDatePicker.on('changeDate', displayGuides);
+    return totalPorAttendanceID;
+}
 
-    
-    populateInsuranceOptions();
-    displayGuides();
-</script>
+// Função para calcular o total de procedimentos por finance_id
+function calcularTotalPorFinanceID() {
+    const totalPorFinanceID = {};
+    procedimentos.forEach(procedimento => {
+        if (!totalPorFinanceID[procedimento.finance_id]) {
+            totalPorFinanceID[procedimento.finance_id] = 0;
+        }
+        totalPorFinanceID[procedimento.finance_id]++;
+    });
+    return totalPorFinanceID;
+}
+
+// Função para calcular os totais por procedure_id
+function calcularTotaisPorProcedureID() {
+    const totaisPorProcedureID = {};
+    procedimentos.forEach(procedimento => {
+        if (!totaisPorProcedureID[procedimento.procedure_id]) {
+            totaisPorProcedureID[procedimento.procedure_id] = {
+                totalProduzido: 0,
+                totalLiquido: 0,
+                totalRecebido: 0,
+                totalNaoRecebido: 0
+            };
+        }
+        totaisPorProcedureID[procedimento.procedure_id].totalProduzido += procedimento.price;
+        totaisPorProcedureID[procedimento.procedure_id].totalLiquido += procedimento.liquid_price;
+        totaisPorProcedureID[procedimento.procedure_id].totalRecebido += procedimento.received_value;
+        totaisPorProcedureID[procedimento.procedure_id].totalNaoRecebido += (procedimento.liquid_price - procedimento.received_value);
+    });
+    return totaisPorProcedureID;
+}
+
+// Função para calcular os totais por tiss_type
+function calcularTotaisPorTissType() {
+    const totaisPorTissType = {};
+    procedimentos.forEach(procedimento => {
+        if (!totaisPorTissType[procedimento.tiss_type]) {
+            totaisPorTissType[procedimento.tiss_type] = {
+                totalProduzido: 0,
+                totalLiquido: 0,
+                totalRecebido: 0,
+                totalNaoRecebido: 0
+            };
+        }
+        totaisPorTissType[procedimento.tiss_type].totalProduzido += procedimento.price;
+        totaisPorTissType[procedimento.tiss_type].totalLiquido += procedimento.liquid_price;
+        totaisPorTissType[procedimento.tiss_type].totalRecebido += procedimento.received_value;
+        totaisPorTissType[procedimento.tiss_type].totalNaoRecebido += (procedimento.liquid_price - procedimento.received_value);
+    });
+    return totaisPorTissType;
+}
+
+// Função para agrupar procedimentos por atendimento
+function agruparProcedimentosPorAtendimento() {
+    const procedimentosPorAtendimento = {};
+    procedimentos.forEach(procedimento => {
+        if (!procedimentosPorAtendimento[procedimento.attendance_id]) {
+            procedimentosPorAtendimento[procedimento.attendance_id] = [];
+        }
+        procedimentosPorAtendimento[procedimento.attendance_id].push(procedimento);
+    });
+    return procedimentosPorAtendimento;
+}
+
+// Função para agrupar procedimentos por financeiro
+function agruparProcedimentosPorFinanceiro() {
+    const procedimentosPorFinanceiro = {};
+    procedimentos.forEach(procedimento => {
+        if (!procedimentosPorFinanceiro[procedimento.finance_id]) {
+            procedimentosPorFinanceiro[procedimento.finance_id] = [];
+        }
+        procedimentosPorFinanceiro[procedimento.finance_id].push(procedimento);
+    });
+    return procedimentosPorFinanceiro;
+}
+
+// Função para calcular totais por data (dia / mês / ano)
+function calcularTotaisPorData() {
+    const totaisPorData = {};
+    procedimentos.forEach(procedimento => {
+        const dataSplit = procedimento.data.split('-');
+        const ano = dataSplit[0];
+        const mes = dataSplit[1];
+        const dia = dataSplit[2];
+
+        const chaveData = `${ano}-${mes}-${dia}`;
+
+        if (!totaisPorData[chaveData]) {
+            totaisPorData[chaveData] = {
+                totalProduzido: 0,
+                totalLiquido: 0,
+                totalRecebido: 0,
+                totalNaoRecebido: 0
+            };
+        }
+        totaisPorData[chaveData].totalProduzido += procedimento.price;
+        totaisPorData[chaveData].totalLiquido += procedimento.liquid_price;
+        totaisPorData[chaveData].totalRecebido += procedimento.received_value;
+        totaisPorData[chaveData].totalNaoRecebido += (procedimento.liquid_price - procedimento.received_value);
+    });
+    return totaisPorData;
+}
